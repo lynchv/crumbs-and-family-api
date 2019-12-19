@@ -6,6 +6,6 @@ app = Flask(__name__)
 
 api.init_app(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://test.db'
 db = SQLAlchemy(app)
 
