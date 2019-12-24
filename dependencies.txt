@@ -1,0 +1,6 @@
+# PROD
+flask-restplus
+flask-sqlalchemy
+
+# DEV
+pylint-flask # "python.linting.pylintArgs": ["--load-plugins", "pylint-flask"]
