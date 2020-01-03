@@ -10,7 +10,7 @@ item_model = api.model('Model', {
     'name': fields.String(required=True),
     'category': fields.String(required=True),
     'description': fields.String(required=True),
-    'image': fields.String(required=False),
+    'image': fields.String(required=True),
     'price': fields.Integer(required=True),
 })
 
@@ -23,9 +23,10 @@ class CreateItem(Resource):
         return m.response
 
 
+@api.route('/')
 @api.route('/<category>')
 class GetItems(Resource):
-    def get(self, category):
+    def get(self, category=None):
         m = ItemManager()
         m.get_items(category)
         return m.response
@@ -33,6 +34,7 @@ class GetItems(Resource):
 
 @api.route('/modify/<item_id>')
 class ModifyItem(Resource):
+    @api.expect(item_model)
     def put(self, item_id):
         m = ItemManager()
         m.update_item(item_id, request.json)

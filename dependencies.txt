@@ -1,6 +1,8 @@
 # PROD
 flask-restplus
 flask-sqlalchemy
+pyyaml
+flask-cors
 
 # DEV
 pylint-flask # "python.linting.pylintArgs": ["--load-plugins", "pylint-flask"]
