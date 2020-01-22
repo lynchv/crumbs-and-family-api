@@ -1,4 +1,5 @@
-from flask import request
+from flask import request, abort
+from flask_login import login_required, current_user
 from flask_restplus import Namespace, Resource, fields
 from FlaskApp.models.item import Item
 from FlaskApp.item_manager import ItemManager
@@ -14,34 +15,44 @@ item_model = api.model('Model', {
     'price': fields.Integer(required=True),
 })
 
-@api.route('/create')
-class CreateItem(Resource):
-    @api.expect(item_model)
-    def post(self):
-        m = ItemManager()
-        m.create_item(request.json) # content type: application/json 
-        return m.response
 
-
-@api.route('/')
 @api.route('/<category>')
-class GetItems(Resource):
-    def get(self, category=None):
+class GetItemGroup(Resource):
+    def get(self, category):
         m = ItemManager()
         m.get_items(category)
         return m.response
 
 
-@api.route('/modify/<item_id>')
-class ModifyItem(Resource):
-    @api.expect(item_model)
-    def put(self, item_id):
+@api.route('/')
+class CreateOrGetItem(Resource):
+    def get(self):
         m = ItemManager()
-        m.update_item(item_id, request.json)
+        m.get_items()
         return m.response
 
-    
+    @api.expect(item_model)
+    @login_required
+    def post(self):
+        m = ItemManager()
+        
+        if current_user.is_admin:
+            m.create_item(request.json)
+        else:
+            abort(403, "Only Website admistrator can modify items")
+        
+        return m.response
+
+
+@api.route('/<item_id>')
+class ModifyItem(Resource):
+    @login_required    
     def delete(self, item_id):
         m = ItemManager()
-        m.delete_item(item_id)
+        
+        if current_user.is_admin:
+            m.delete_item(item_id)
+        else:
+            abort(403, "Only Website admistrator can modify items")
+        
         return m.response

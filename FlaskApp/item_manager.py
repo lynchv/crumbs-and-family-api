@@ -18,12 +18,12 @@ class ItemManager(object):
         }
 
 
-    def get_items(self, category):
+    def get_items(self, category = False):
         print("getting all items with {}".format(category))
         if category:
             items = Item.query.filter_by(category=category).all()
         else:
-            items = Item.query.filter_by().all()
+            items = Item.query.all()
         self.response["data"] = [i.to_json() for i in items]
 
 
@@ -39,20 +39,6 @@ class ItemManager(object):
         )
         db.session.add(item)
         db.session.commit()
-
-        
-    def update_item(self, item_id, new_item):
-        print("updating item {} with {}".format(item_id, new_item))
-        old_item =  Item.query.filter_by(item_id=item_id).one_or_none()
-        if not item:
-            abort(400, "Item can not be found")
-        self.__validate_item(new_item)
-        old_item.image = new_item['image'] if "image" in new_item else old_item.image
-        old_item.name = new_item['name']
-        old_item.category = new_item['category']
-        old_item.description = new_item['description']
-        old_item.price = new_item['price']
-        db.session.commit()
         
 
     def delete_item(self, item_id):
@@ -62,10 +48,12 @@ class ItemManager(object):
             abort(400, "Item can not be found")
         db.session.delete(item)
         db.session.commit()
+        self.response['data'] = True
+
 
     def __validate_item(self, item):
         if item["category"] not in self.cfg["supported_category"]:
-            err_msg = "Item type '{}' is not supported".format(item['category'])
+            err_msg = "Item category '{}' is not supported".format(item['category'])
             abort(400, err_msg)
 
         if len(item["description"]) > 2048:

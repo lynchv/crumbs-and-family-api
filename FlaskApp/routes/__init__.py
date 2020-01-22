@@ -1,6 +1,7 @@
 from flask_restplus import Api
 
 from .item import api as item
+from .user import api as user
 
 api = Api(
     title='My Title',
@@ -9,3 +10,4 @@ api = Api(
 )
 
 api.add_namespace(item)
+api.add_namespace(user)
