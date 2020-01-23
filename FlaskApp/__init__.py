@@ -5,7 +5,7 @@ from flask_login import LoginManager
 
 # Create  basic flask app with required config
 app = Flask(__name__)
-cors = CORS(app)
+CORS(app)
 app.config['SECRET_KEY'] = '^sQjs^Q0hz51^FXuR6$rrI$VF2sd&qXb'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tmp.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

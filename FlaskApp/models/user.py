@@ -15,6 +15,7 @@ class User(UserMixin, db.Model):
         user_json['id'] = self.id
         user_json['first_name'] = self.first_name
         user_json['last_name'] = self.last_name
+        user_json['email'] = self.email
         user_json['is_admin'] = self.is_admin
 
         return user_json

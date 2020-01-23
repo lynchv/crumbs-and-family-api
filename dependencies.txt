@@ -1,4 +1,5 @@
 # PROD
+flask=login
 flask-restplus
 flask-sqlalchemy
 pyyaml

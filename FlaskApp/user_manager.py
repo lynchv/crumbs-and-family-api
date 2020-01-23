@@ -1,4 +1,4 @@
-import os, yaml
+import os, yaml, re
 from flask import abort
 from FlaskApp import db
 from FlaskApp.models.user import User
@@ -13,15 +13,16 @@ class UserMananager(object):
 
         self.response = {
             "data": None,
-            "error": "",
-            "warning": "",
+            "message": "",
         }
 
 
     def create_user(self, user_info):
         user = User.query.filter_by(email = user_info['email']).one_or_none()
+        
         if user:
             abort(400, "Email already in use.")
+        self._verify_user_info(user_info)
 
         password = generate_password_hash(user_info['password'], method='sha256')
 
@@ -49,3 +50,14 @@ class UserMananager(object):
         return user
 
         
+    def _verify_user_info(self, user_info):
+        regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+
+        if len(user_info['first_name']) < 1:
+            abort(400, "First name can not be empty")
+        if len(user_info['last_name']) < 1:
+            abort(400, "Last name can not be empty")
+        if not re.search(regex, user_info['email']):
+            abort(400, "Please provide a valid email address")
+        if len(user_info['password']) < 7:
+            abort(400, "Please enter a password with at least 8 characters")
