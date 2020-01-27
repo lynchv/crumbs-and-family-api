@@ -26,6 +26,10 @@ class ItemManager(object):
             items = Item.query.all()
         self.response["data"] = [i.to_json() for i in items]
 
+    
+    def get_all_categories(self):
+        self.response['data'] = self.cfg["supported_category"]
+
 
     def create_item(self, new_item):
         print("creating an item with {}".format(new_item))

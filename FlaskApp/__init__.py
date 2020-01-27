@@ -5,6 +5,11 @@ from flask_login import LoginManager
 
 # Create  basic flask app with required config
 app = Flask(__name__)
+@app.after_request
+def after_request(response):
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    return response
+
 CORS(app)
 app.config['SECRET_KEY'] = '^sQjs^Q0hz51^FXuR6$rrI$VF2sd&qXb'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tmp.db'

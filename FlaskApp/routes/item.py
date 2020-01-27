@@ -16,6 +16,14 @@ item_model = api.model('Model', {
 })
 
 
+@api.route('/categories')
+class GetItemGroup(Resource):
+    def get(self):
+        m = ItemManager()
+        m.get_all_categories()
+        return m.response
+
+
 @api.route('/<category>')
 class GetItemGroup(Resource):
     def get(self, category):
