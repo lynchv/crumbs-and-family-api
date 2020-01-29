@@ -13,8 +13,7 @@ class ItemManager(object):
 
         self.response = {
             "data": None,
-            "error": "",
-            "warning": "",
+            "message": "",
         }
 
 

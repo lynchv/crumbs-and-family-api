@@ -53,8 +53,8 @@ class CreateOrGetItem(Resource):
 
 
 @api.route('/<item_id>')
-class ModifyItem(Resource):
-    @login_required    
+class DeleteItem(Resource):
+    @login_required
     def delete(self, item_id):
         m = ItemManager()
         
