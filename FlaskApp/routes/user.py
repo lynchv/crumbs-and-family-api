@@ -1,5 +1,4 @@
 from flask import request
-from flask_login import login_user, logout_user, current_user
 from flask_restplus import Namespace, Resource, fields
 from FlaskApp.user_manager import UserMananager
 
@@ -23,8 +22,7 @@ class LoginUser(Resource):
     @api.expect(login_model)
     def post(self):
         m = UserMananager()
-        user = m.verify_login(request.json)
-        login_user(user)
+        m.login_user(request.json)
         return m.response
 
 
@@ -32,12 +30,7 @@ class LoginUser(Resource):
 class LogoutUser(Resource):
     def get(self):
         m = UserMananager()
-        if current_user.is_authenticated:
-            print("Logging out user id {}".format(current_user.id))
-            logout_user()
-        else:
-            m.response['message'] = "Trying to logout without being logged in."
-        
+        m.logout_user()
         return m.response
 
 

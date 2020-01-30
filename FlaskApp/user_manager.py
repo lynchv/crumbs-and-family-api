@@ -1,8 +1,10 @@
 import os, yaml, re
 from flask import abort
+from flask_login import login_user, logout_user, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from FlaskApp import db
 from FlaskApp.models.user import User
-from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class UserMananager(object):
@@ -40,16 +42,27 @@ class UserMananager(object):
         self.response['data'] = True
 
 
-    def verify_login(self, login_info):
-        user = User.query.filter_by(email = login_info['email']).one_or_none()
-        
-        if not user or not check_password_hash(user.password, login_info['password']):
-            abort(400, "Please check login details and try again.")
-        self.response['data'] = user.to_json()
-        
-        return user
+    def login_user(self, login_info):
+        # Verify user is not already logged in
+        if current_user.is_authenticated:
+            print("User {} was already logged in".format(current_user.id))
+            self.response['data'] = current_user.to_json()
+        else:
+            user = User.query.filter_by(email = login_info['email']).one_or_none()
+            if not user or not check_password_hash(user.password, login_info['password']):
+                abort(400, "Please check login details and try again.")
+            login_user(user)
+            self.response['data'] = user.to_json()
 
-        
+
+    def logout_user(self):
+        if current_user.is_authenticated:
+            print("Logging out user id {}".format(current_user.id))
+            logout_user()
+        else:
+            m.response['message'] = "Trying to logout without being logged in."
+
+
     def _verify_user_info(self, user_info):
         regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
 
